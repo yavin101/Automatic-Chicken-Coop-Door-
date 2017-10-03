@@ -58,25 +58,25 @@ void loop()
 	// DEBUG CODE
 	/*
 	Serial.print("light Sensor 1 is  :");
-	Serial.println(lightValue1, DEC);
+	Serial.println(lightValue1);
 	delay(2000);
 	Serial.print("light Sensor 2 is  :");
-	Serial.println(lightValue2, DEC);
+	Serial.println(lightValue2);
 	delay(2000);
 	Serial.print("light State 1 is  :");
-	Serial.println(lightstate1, DEC);
+	Serial.println(lightstate1);
 	delay(2000);
 	Serial.print("light State 2 is  :");
-	Serial.println(lightstate2, DEC);
+	Serial.println(lightstate2);
 	delay(2000);
 	Serial.print("manualOverrideState is   :");
-	Serial.println(manualOverrideState, DEC);
+	Serial.println(manualOverrideState);
 	delay(2000);
 	Serial.print("doorSwitch_Open_SwitchState is   :");
-	Serial.println(doorSwitch_Open_SwitchState, DEC);
+	Serial.println(doorSwitch_Open_SwitchState);
 	delay(2000);
 	Serial.print("doorSwitch_Close_SwitchState is   :");
-	Serial.println(doorSwitch_Close_SwitchState, DEC);
+	Serial.println(doorSwitch_Close_SwitchState);
 	delay(2000);
 	*/
 	if ((manualOverrideState == true) && (lightstate1 && lightstate2) == LOW)
