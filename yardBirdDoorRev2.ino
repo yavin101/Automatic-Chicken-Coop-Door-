@@ -81,7 +81,7 @@ void loop()
 	*/
 	if ((manualOverrideState == true) && (lightstate1 && lightstate2) == LOW)
 	{
-		delay(5000);
+		delay(2700000); //45 mins 
 		if ((manualOverrideState == true) && (lightstate1 && lightstate2) == LOW)
 		{
 			closeDoor();
@@ -89,7 +89,7 @@ void loop()
 	}
 	if ((manualOverrideState == true) && (lightstate1 && lightstate2) == HIGH)
 	{
-		delay(5000);
+		delay(2700000); //45 mins 
 		if ((manualOverrideState == true) && (lightstate1 && lightstate2) == HIGH)
 		{
 			openDoor();
