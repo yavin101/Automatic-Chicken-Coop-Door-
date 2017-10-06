@@ -41,7 +41,7 @@ bool doorSwitch_Open_SwitchState;
 bool doorSwitch_Close_SwitchState;
 
 Metro doorDelayClose  = Metro(5400000); // 90 mins wait 
-Metro doorDelayOpen  = Metro(600000); // 90 mins wait
+Metro doorDelayOpen  = Metro(600000); // 10 mins wait
 
 void setup()
 {
