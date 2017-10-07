@@ -40,7 +40,7 @@ bool manualOverrideState;
 bool doorSwitch_Open_SwitchState;
 bool doorSwitch_Close_SwitchState;
 
-Metro doorDelayClose  = Metro(5400000); // 90 mins wait 
+Metro doorDelayClose  = Metro(7200000); // 120 mins wait 
 Metro doorDelayOpen  = Metro(600000); // 10 mins wait
 
 void setup()
@@ -71,18 +71,20 @@ void loop()
 	if ((manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
 	{
 		delay(2000); 
+		Serial.print(doorDelayClose.check());
 		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW) )
 		{
-			
+			Serial.print("The door is closing ");
 			closeDoor();
 		}
 	}
 	if ((manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
 	{
 		delay(2000); 
+		Serial.print(doorDelayOpen.check());
 		if ((doorDelayOpen.check()) && (manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
 		{
-			
+			Serial.print(" The door is Opening ");
 			openDoor();
 		}
 	}
