@@ -41,11 +41,6 @@ bool doorSwitch_Open_SwitchState;
 bool doorSwitch_Close_SwitchState;
 
 
- Metro doorDelayClose  = Metro(3600000); // 60 mins wait 
- Metro doorDelayOpen  = Metro(600000); // 10 mins wait
-float timeStateClose ;
-float timeStateOpen ;
-
 
 void setup()
 {
@@ -70,14 +65,14 @@ void loop()
 	manualOverrideState = digitalRead(manualOverride);
 	doorSwitch_Open_SwitchState = digitalRead(doorSwitchOpen);
 	doorSwitch_Close_SwitchState = digitalRead(doorSwitchClose);
-	timeStateClose = doorDelayClose.check();
-	timeStateOpen = doorDelayOpen.check();
+	
 
 	if ((manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
 	{
-		delay(2000); 
-		Serial.print("The door is closing in : ");
-		Serial.println( timeStateClose);
+		
+		Metro doorDelayClose  = Metro(3600000); // 60 mins wait 
+		Serial.print("The door will close in 60 mins: ");
+		
 
 		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH) )
 		{
@@ -87,9 +82,10 @@ void loop()
 	}
 	if ((manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
 	{
-		delay(2000); 
-		Serial.print(" The door is will be Opening in : ");
-		Serial.println(timeStateOpen);
+		 
+		Metro doorDelayOpen  = Metro(600000); // 10 mins wait
+		Serial.print(" The door is will be Opening in 10 mins: ");
+		
 
 		if ((doorDelayOpen.check()) && (manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
 		{
@@ -99,7 +95,7 @@ void loop()
 	}
 	if ((doorSwitch_Open_SwitchState == LOW) && (manualOverrideState == false))
 	{
-		delay(1000);
+		Metro manualOverrideDoorDelayOpen = Metro(1000); 
 		if ((doorSwitch_Open_SwitchState == LOW) && (manualOverrideState == false))
 		{
 			manualoverrideopenDoor();
@@ -108,7 +104,7 @@ void loop()
 	}
 	if ((doorSwitch_Close_SwitchState == LOW) && (manualOverrideState == false))
 	{
-		delay(1000);
+		Metro manualOverrideDoorDelayClose = Metro(1000);
 		if ((doorSwitch_Close_SwitchState == LOW) && (manualOverrideState == false))
 		{
 			manualOverridecloseDoor();
@@ -118,7 +114,7 @@ void loop()
 
 
 	// DEBUG CODE
-	
+	/*
 	Serial.print("light Sensor 1 is  :");
 	Serial.println(lightValue1);
 	delay(2000);
@@ -140,7 +136,7 @@ void loop()
 	Serial.print("doorSwitch_Close_SwitchState is   :");
 	Serial.println(doorSwitch_Close_SwitchState);
 	delay(2000);
-	
+	*/
 }
 
 void closeDoor()
