@@ -1,16 +1,8 @@
-
-
-
-
-
 /*Light sensor Automatic Chicken Coop Door
-Jean-baptiste LeConte Sept 20, 2017 
+Jean-baptiste LeConte Sept 20, 2017
 */
-
-
 #include <Metro.h>
 #include <Arduino.h>
-
 // Initialize the H-Brigde
 // pins 11, 12, 13 for Ch 1
 // pins 8, 9, 10 for Ch 2
@@ -28,8 +20,6 @@ Jean-baptiste LeConte Sept 20, 2017
 #define lightSensor2 A1
 #define digitalLightSensor1 2
 #define digitalLightSensor2 3
-
-
 /*-----( Declare Variables )-----*/
 // The lightValue1 and lightValue2 is the lightsensor(s) variables
 int lightValue1;
@@ -39,9 +29,6 @@ int lightstate2;
 bool manualOverrideState;
 bool doorSwitch_Open_SwitchState;
 bool doorSwitch_Close_SwitchState;
-
-
-
 void setup()
 {
 	pinMode(en1, OUTPUT);
@@ -52,7 +39,6 @@ void setup()
 	pinMode(doorSwitchClose, INPUT_PULLUP);
 	pinMode(digitalLightSensor1, INPUT);
 	pinMode(digitalLightSensor2, INPUT);
-
 	Serial.begin(9600); // open the serial port
 }
 
@@ -65,16 +51,11 @@ void loop()
 	manualOverrideState = digitalRead(manualOverride);
 	doorSwitch_Open_SwitchState = digitalRead(doorSwitchOpen);
 	doorSwitch_Close_SwitchState = digitalRead(doorSwitchClose);
-	
-
 	if ((manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
 	{
-		
-		Metro doorDelayClose  = Metro(3600000); // 60 mins wait 
+		Metro doorDelayClose = Metro(3600000); // 60 mins wait
 		Serial.print("The door will close in 60 mins: ");
-		
-
-		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH) )
+		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
 		{
 			Serial.print("The door is closing ");
 			closeDoor();
@@ -82,11 +63,8 @@ void loop()
 	}
 	if ((manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
 	{
-		 
-		Metro doorDelayOpen  = Metro(600000); // 10 mins wait
+		Metro doorDelayOpen = Metro(600000); // 10 mins wait
 		Serial.print(" The door is will be Opening in 10 mins: ");
-		
-
 		if ((doorDelayOpen.check()) && (manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
 		{
 			Serial.print(" The door is Opening ");
@@ -95,7 +73,7 @@ void loop()
 	}
 	if ((doorSwitch_Open_SwitchState == LOW) && (manualOverrideState == false))
 	{
-		Metro manualOverrideDoorDelayOpen = Metro(1000); 
+		Metro manualOverrideDoorDelayOpen = Metro(1000);
 		if ((doorSwitch_Open_SwitchState == LOW) && (manualOverrideState == false))
 		{
 			manualoverrideopenDoor();
@@ -111,8 +89,6 @@ void loop()
 			Serial.print("Manual override Engaged; The door is closing ");
 		}
 	}
-
-
 	// DEBUG CODE
 	/*
 	Serial.print("light Sensor 1 is  :");
