@@ -40,8 +40,19 @@ void setup()
 	pinMode(digitalLightSensor1, INPUT);
 	pinMode(digitalLightSensor2, INPUT);
 	Serial.begin(9600); // open the serial port
+	
+	// Check light and door state
+	lightstate1 = digitalRead(digitalLightSensor1);
+	lightstate2 = digitalRead(digitalLightSensor2);
+	if ((lightstate1 == HIGH) && (lightstate2 == HIGH)){
+	closeDoor();
+	Serial.print(" It is NightTIME ");
+	}
+	else if((lightstate1 == LOW) && (lightstate2 == LOW)){
+	openDoor();
+	Serial.print(" It is DayTIME ");
+	}
 }
-
 void loop()
 {
 	lightstate1 = digitalRead(digitalLightSensor1);
@@ -51,6 +62,8 @@ void loop()
 	manualOverrideState = digitalRead(manualOverride);
 	doorSwitch_Open_SwitchState = digitalRead(doorSwitchOpen);
 	doorSwitch_Close_SwitchState = digitalRead(doorSwitchClose);
+
+	
 	if ((manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
 	{
 		Metro doorDelayClose = Metro(3600000); // 60 mins wait
