@@ -63,22 +63,22 @@ void loop()
 	doorSwitch_Open_SwitchState = digitalRead(doorSwitchOpen);
 	doorSwitch_Close_SwitchState = digitalRead(doorSwitchClose);
 
-	
-	if ((manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
+
+	if ((manualOverrideState == true) && (lightstate1 != HIGH) && (lightstate2 != HIGH))
 	{
 		Metro doorDelayClose = Metro(3600000); // 60 mins wait
 		Serial.print("The door will close in 60 mins: ");
-		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 == HIGH) && (lightstate2 == HIGH))
+		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 != HIGH) && (lightstate2 != HIGH))
 		{
 			Serial.print("The door is closing ");
 			closeDoor();
 		}
 	}
-	if ((manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
+	if ((manualOverrideState == true) && (lightstate1 != LOW) && (lightstate2 != LOW))
 	{
 		Metro doorDelayOpen = Metro(600000); // 10 mins wait
 		Serial.print(" The door is will be Opening in 10 mins: ");
-		if ((doorDelayOpen.check()) && (manualOverrideState == true) && (lightstate1 == LOW) && (lightstate2 == LOW))
+		if ((doorDelayOpen.check()) && (manualOverrideState == true) && (lightstate1 != LOW) && (lightstate2 != LOW))
 		{
 			Serial.print(" The door is Opening ");
 			openDoor();
