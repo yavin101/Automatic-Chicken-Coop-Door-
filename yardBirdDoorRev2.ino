@@ -1,7 +1,6 @@
 /*Light sensor Automatic Chicken Coop Door
 Jean-baptiste LeConte Sept 20, 2017
 */
-#include <Metro.h>
 #include <Arduino.h>
 // Initialize the H-Brigde
 // pins 11, 12, 13 for Ch 1
@@ -29,6 +28,14 @@ int lightstate2;
 bool manualOverrideState;
 bool doorSwitch_Open_SwitchState;
 bool doorSwitch_Close_SwitchState;
+const int doorCloseWaitTimeDuration = 3600000; // 60 mins wait
+const int doorOpenWaitTimeDuration = 600000; // 10 mins wait
+unsigned long currentMillisCloseWait = 0; // stores the value of millis() in each iteration of loop()
+unsigned long previousMillisCloseWait = 0; // will store last time the LED was updated
+unsigned long currentMillisOpenWait = 0; // stores the value of millis() in each iteration of loop()
+unsigned long previousMillisOpeneWait = 0; // will store last time the LED was updated
+bool closeWaitTimeCheck;
+bool openWaitTimeCheck;
 void setup()
 {
 	pinMode(en1, OUTPUT);
@@ -40,19 +47,22 @@ void setup()
 	pinMode(digitalLightSensor1, INPUT);
 	pinMode(digitalLightSensor2, INPUT);
 	Serial.begin(9600); // open the serial port
-	
 	// Check light and door state
 	lightstate1 = digitalRead(digitalLightSensor1);
 	lightstate2 = digitalRead(digitalLightSensor2);
-	if ((lightstate1 == HIGH) && (lightstate2 == HIGH)){
-	closeDoor();
-	Serial.print(" It is NightTIME ");
+	if ((lightstate1 == HIGH) && (lightstate2 == HIGH))
+	{
+		closeDoor();
+		Serial.print(" It is NightTIME ");
 	}
-	else if((lightstate1 == LOW) && (lightstate2 == LOW)){
-	openDoor();
-	Serial.print(" It is DayTIME ");
-	}
+	else
+		if ((lightstate1 == LOW) && (lightstate2 == LOW))
+		{
+			openDoor();
+			Serial.print(" It is DayTIME ");
+		}
 }
+
 void loop()
 {
 	lightstate1 = digitalRead(digitalLightSensor1);
@@ -62,45 +72,29 @@ void loop()
 	manualOverrideState = digitalRead(manualOverride);
 	doorSwitch_Open_SwitchState = digitalRead(doorSwitchOpen);
 	doorSwitch_Close_SwitchState = digitalRead(doorSwitchClose);
-
-
-	if ((manualOverrideState == true) && (lightstate1 != HIGH) && (lightstate2 != HIGH))
+	currentMillisCloseWait = millis(); // capture the latest value of millis()
+	currentMillisOpenWait = millis(); // capture the latest value of millis()      // this is equivalent to noting the time from a clock
+	updateTimeCloseWaitTime(); // run clock
+	updateTimeOpenWaitTime();
+	if ((closeWaitTimeCheck == true) && (manualOverrideState == true) && (lightstate1 != HIGH) && (lightstate2 != HIGH))
 	{
-		Metro doorDelayClose = Metro(3600000); // 60 mins wait
-		Serial.print("The door will close in 60 mins: ");
-		if ((doorDelayClose.check()) && (manualOverrideState == true) && (lightstate1 != HIGH) && (lightstate2 != HIGH))
-		{
-			Serial.print("The door is closing ");
-			closeDoor();
-		}
+		Serial.print("The door is closing ");
+		closeDoor();
 	}
-	if ((manualOverrideState == true) && (lightstate1 != LOW) && (lightstate2 != LOW))
+	if ((openWaitTimeCheck == true) && (manualOverrideState == true) && (lightstate1 != LOW) && (lightstate2 != LOW))
 	{
-		Metro doorDelayOpen = Metro(600000); // 10 mins wait
-		Serial.print(" The door is will be Opening in 10 mins: ");
-		if ((doorDelayOpen.check()) && (manualOverrideState == true) && (lightstate1 != LOW) && (lightstate2 != LOW))
-		{
-			Serial.print(" The door is Opening ");
-			openDoor();
-		}
+		Serial.print(" The door is Opening ");
+		openDoor();
 	}
 	if ((doorSwitch_Open_SwitchState == LOW) && (manualOverrideState == false))
 	{
-		Metro manualOverrideDoorDelayOpen = Metro(1000);
-		if ((doorSwitch_Open_SwitchState == LOW) && (manualOverrideState == false))
-		{
-			manualoverrideopenDoor();
-			Serial.print("Manual override Engaged; The door is Opening ");
-		}
+		manualoverrideopenDoor();
+		Serial.print("Manual override Engaged; The door is Opening ");
 	}
 	if ((doorSwitch_Close_SwitchState == LOW) && (manualOverrideState == false))
 	{
-		Metro manualOverrideDoorDelayClose = Metro(1000);
-		if ((doorSwitch_Close_SwitchState == LOW) && (manualOverrideState == false))
-		{
-			manualOverridecloseDoor();
-			Serial.print("Manual override Engaged; The door is closing ");
-		}
+		manualOverridecloseDoor();
+		Serial.print("Manual override Engaged; The door is closing ");
 	}
 	// DEBUG CODE
 	/*
@@ -166,4 +160,30 @@ void manualoverrideopenDoor()
 	analogWrite(en1, 255);
 	digitalWrite(in1, HIGH);
 	digitalWrite(in2, LOW);
+}
+
+void updateTimeCloseWaitTime()
+{
+	if ((unsigned long) currentMillisCloseWait - previousMillisCloseWait >= doorCloseWaitTimeDuration)
+	{
+		previousMillisCloseWait += doorCloseWaitTimeDuration;
+		closeWaitTimeCheck = false;
+	}
+	else
+	{
+		closeWaitTimeCheck = true;
+	}
+}
+
+void updateTimeOpenWaitTime()
+{
+	if ((unsigned long) currentMillisOpenWait - previousMillisOpeneWait >= doorOpenWaitTimeDuration)
+	{
+		previousMillisOpeneWait += doorOpenWaitTimeDuration;
+		openWaitTimeCheck = false;
+	}
+	else
+	{
+		openWaitTimeCheck = true;
+	}
 }
