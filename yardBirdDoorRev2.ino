@@ -1,10 +1,11 @@
-/*Light sensor Automatic Chicken Coop Door
+/* Light sensor Automatic Chicken Coop Door
 Jean-baptiste LeConte Sept 20, 2017
 */
 #include <Arduino.h>
-// Initialize the H-Brigde
+// Initialize the H-Bridge
 // pins 11, 12, 13 for Ch 1
 // pins 8, 9, 10 for Ch 2
+
 /*-----( Declare Constants )-----*/
 // Ch 1 Main Door Linear actuator
 #define en1 13
@@ -19,6 +20,7 @@ Jean-baptiste LeConte Sept 20, 2017
 #define lightSensor2 A1
 #define digitalLightSensor1 2
 #define digitalLightSensor2 3
+
 /*-----( Declare Variables )-----*/
 // The lightValue1 and lightValue2 is the lightsensor(s) variables
 int lightValue1;
@@ -53,4 +55,32 @@ void updateTimeOpenWaitTime() {
     previousMillisOpenWait = currentMillisOpenWait;
     openWaitTimeCheck = true;
   } else {
-    openWaitTimeCheck =
+    openWaitTimeCheck = false;
+  }
+}
+
+void setup() {
+  pinMode(en1, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(doorSwitchOpen, INPUT_PULLUP);
+  pinMode(doorSwitchClose, INPUT_PULLUP);
+  pinMode(manualOverride, INPUT_PULLUP);
+  pinMode(lightSensor1, INPUT);
+  pinMode(lightSensor2, INPUT);
+  pinMode(digitalLightSensor1, OUTPUT);
+  pinMode(digitalLightSensor2, OUTPUT);
+  digitalWrite(digitalLightSensor1, HIGH); //activate pullup resistor
+  digitalWrite(digitalLightSensor2, HIGH); //activate pullup resistor
+  Serial.begin(9600);
+  Serial.println("Setup done");
+}
+
+void loop() {
+  // read the light sensors
+  lightValue1 = analogRead(lightSensor1);
+  lightValue2 = analogRead(lightSensor2);
+  if (lightValue1 < 400 || lightValue2 < 400) { // if one of the sensors detects darkness
+    digitalWrite(digitalLightSensor1, LOW); // turn off the light sensor indicator LEDs
+    digitalWrite(digitalLightSensor2, LOW);
+   
